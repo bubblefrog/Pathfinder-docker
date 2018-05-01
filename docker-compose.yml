@@ -1,0 +1,48 @@
+version: '3'
+services:
+  web:
+    build:
+      context: Pathfinder
+    ports:
+      - "8082:8082"
+    environment:
+      MYSQL_PATHFINDER_DBNAME: pathfinder
+      MYSQL_PATHFINDER_USER: pathfinder
+      MYSQL_PATHFINDER_HOST: pf-db
+
+      MYSQL_UNIVERSE_DBNAME: pathfinder
+      MYSQL_UNIVERSE_USER: pathfinder
+      MYSQL_UNIVERSE_HOST: pf-db
+
+      MYSQL_STATIC_DBNAME: pathfinder-static
+      MYSQL_STATIC_USER: pathfinder-static
+      MYSQL_STATIC_HOST: pf-static
+    env_file:
+      - web-env.env
+    links:
+      - pf-db
+      - pf-static
+  pf-db:
+    image: mariadb:latest
+    volumes:
+      - pf-db-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: pathfinder
+      MYSQL_USER: pathfinder
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    env_file:
+      - db-web-env.env
+  pf-static:
+    build:
+      context: Pathfinder-db
+    volumes:
+      - pf-static-data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: pathfinder-static
+      MYSQL_USER: pathfinder-static
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    env_file:
+      - db-static-env.env
+volumes:
+  pf-db-data:
+  pf-static-data:

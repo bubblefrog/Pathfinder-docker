@@ -13,6 +13,7 @@ FROM nginx
 LABEL MAINTAINER="fredriksson8@gmail.com"
 LABEL version=${VERSION}
 RUN apt-get update && apt-get install -y \ 
+             cron\
              apache2-utils\
              php7.0-mbstring\
              php-xml\
@@ -55,7 +56,6 @@ ENV CONFIG_SERVERNAME="PATHFINDER"\
     PF_SEARCHDEFAULTCOUNT="4"\
     PF_MAXDEFAULTCOUNT="6"\
     PF_SEARCHLIMIT="8"\
-    ROUTES_SETUP="1"\
     MYSQL_PATHFINDER_DBNAME="pathfinder"\    
     MYSQL_PATHFINDER_HOST=""\
     MYSQL_PATHFINDER_USER=""\
@@ -79,12 +79,13 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
 &&  ln -sf /conf.d/pathfinder.ini /var/www/pathfinder/app/pathfinder.ini \
 &&  ln -sf /conf.d/pathfinder.conf /etc/nginx/conf.d/pathfinder.conf \
 &&  ln -sf /conf.d/nginx.conf /etc/nginx/nginx.conf\
+&&  ln -sf /conf.d/pf-cron /etc/cron.d/pf-cron\
 &&  sed -i 's/max_execution_time = .*/max_execution_time = 600/' /etc/php/7.0/fpm/php.ini\
 &&  sed -i 's/.*max_input_vars = .*/max_input_vars = 3000/' /etc/php/7.0/fpm/php.ini\
 &&  sed -i 's/html_errors = .*/html_errors = On/' /etc/php/7.0/fpm/php.ini
-#RUN crontab -l | echo "* * * * * cd /var/www/pathfinder; php index.php /cron >> /var/www/pathfinder/logs/cron_pathfinder.log 2>&1" | crontab -
 
 CMD /usr/local/bin/confd -onetime -backend env \
 &&htpasswd -b -c /etc/nginx/.setup_pass admin ${ADMIN_PASSWORD}\
+&&service cron start\
 &&service php7.0-fpm start\
 &&nginx -g "daemon off;"
