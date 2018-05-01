@@ -1,5 +1,6 @@
 FROM ubuntu:artful as builder
-ARG URL=https://github.com/exodus4d/pathfinder/archive/v1.3.4.tar.gz
+ARG VERSION=v1.3.4
+ARG URL=https://github.com/exodus4d/pathfinder/archive/${VERSION}.tar.gz
 RUN apt-get update && apt-get install -y composer wget php-zmq php-curl
 ADD ${URL} /tmp/pf.tar.gz
 RUN tar -C /tmp/ -xvf /tmp/pf.tar.gz\
@@ -24,7 +25,7 @@ COPY --from=builder /var/www/pathfinder /var/www/pathfinder
 RUN chown -R www-data:www-data /var/www/pathfinder
 WORKDIR /var/www/pathfinder
 COPY assets/nginx/h5bp /etc/nginx/h5bp
-COPY assets/confd /etc/confd
+COPY assets/confd-${VERSION} /etc/confd
 COPY assets/conf.d /conf.d
 
 ENV CONFIG_SERVERNAME="PATHFINDER"\
