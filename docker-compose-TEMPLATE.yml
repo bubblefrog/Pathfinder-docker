@@ -28,9 +28,8 @@ services:
       SERVERURL: SERVERURL-change this
       SSO_CLIENTID: SSO_CLIENTID-change this
       SSO_SECRETKEY: SSO_CLIENTID-change this
-    links:
-      - pf-db
-      - pf-static
+    networks:
+        main:
   pf-db:
     image: mariadb:latest
     volumes:
@@ -40,6 +39,8 @@ services:
       MYSQL_USER: pathfinder
       MYSQL_PASSWORD: PFDB-password change this
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    networks:
+        main:
   pf-static:
     build:
       context: Pathfinder-db
@@ -50,6 +51,11 @@ services:
       MYSQL_USER: pathfinder-static
       MYSQL_PASSWORD: PFSTATICDB-password change this
       MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    networks:
+        main:
 volumes:
   pf-db-data:
   pf-static-data:
+
+networks:
+  main:
