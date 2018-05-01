@@ -11,7 +11,7 @@ RUN tar -C /tmp/ -xvf /tmp/pf.tar.gz\
 
 FROM nginx
 LABEL MAINTAINER="fredriksson8@gmail.com"
-LABEL NAME="Pathfinder-docker"
+LABEL version=${VERSION}
 RUN apt-get update && apt-get install -y \ 
              apache2-utils\
              php7.0-mbstring\
