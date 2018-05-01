@@ -1,0 +1,7 @@
+[template]
+src = "pathfinder.conf.tmpl"
+dest = "/conf.d/pathfinder.conf"
+keys = [
+    "/serverurl",
+    "/nginx/",
+]

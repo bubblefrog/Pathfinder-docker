@@ -1,0 +1,6 @@
+[template]
+src = "routes.ini.tmpl"
+dest = "/conf.d/routes.ini"
+keys = [
+    "/routes"
+]

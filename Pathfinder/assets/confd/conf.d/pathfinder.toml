@@ -1,0 +1,25 @@
+[template]
+src = "pathfinder.ini.tmpl"
+dest = "/conf.d/pathfinder.ini"
+keys = [
+    "/pf/name",
+    "/pf/corporation/id",
+    "/pf/alliance/id",
+    "/pf/private/lifetime",
+    "/pf/private/maxcount",
+    "/pf/private/maxshared",
+    "/pf/private/maxsystems",
+    "/pf/corporation/lifetime",
+    "/pf/corporation/maxcount",
+    "/pf/corporation/maxshared",
+    "/pf/corporation/maxsystems",
+    "/pf/alliance/lifetime",
+    "/pf/alliance/maxcount",
+    "/pf/alliance/maxshared",
+    "/pf/alliance/maxsystems",
+    "/pf/searchdepth",
+    "/pf/searchdefaultcount",
+    "/pf/maxdefaultcount",
+    "/pf/searchlimit",
+    
+]

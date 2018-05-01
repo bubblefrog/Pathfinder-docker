@@ -1,0 +1,7 @@
+[template]
+src = "config.ini.tmpl"
+dest = "/conf.d/config.ini"
+keys = [
+    "/config/servername",
+    "/config/cache",
+]

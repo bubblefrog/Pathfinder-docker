@@ -1,0 +1,10 @@
+[template]
+src = "environment.ini.tmpl"
+dest = "/conf.d/environment.ini"
+keys = [
+    "/nginx/",
+    "/serverurl",
+    "/mysql/",
+    "/sso/clientid",
+    "/sso/secretkey",
+]
