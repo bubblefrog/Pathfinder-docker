@@ -15,6 +15,7 @@ LABEL NAME="Pathfinder-docker"
 RUN apt-get update && apt-get install -y \ 
              apache2-utils\
              php7.0-mbstring\
+             php-xml\
              php7.0-fpm\
              php7.0-zmq\
 		     php7.0-curl \
@@ -25,7 +26,7 @@ COPY --from=builder /var/www/pathfinder /var/www/pathfinder
 RUN chown -R www-data:www-data /var/www/pathfinder
 WORKDIR /var/www/pathfinder
 COPY assets/nginx/h5bp /etc/nginx/h5bp
-COPY assets/confd-${VERSION} /etc/confd
+COPY assets/confd-v1.3.4 /etc/confd
 COPY assets/conf.d /conf.d
 
 ENV CONFIG_SERVERNAME="PATHFINDER"\
@@ -79,7 +80,8 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
 &&  ln -sf /conf.d/pathfinder.conf /etc/nginx/conf.d/pathfinder.conf \
 &&  ln -sf /conf.d/nginx.conf /etc/nginx/nginx.conf\
 &&  sed -i 's/max_execution_time = .*/max_execution_time = 600/' /etc/php/7.0/fpm/php.ini\
-&&  sed -i 's/.*max_input_vars = .*/max_input_vars = 3000/' /etc/php/7.0/fpm/php.ini
+&&  sed -i 's/.*max_input_vars = .*/max_input_vars = 3000/' /etc/php/7.0/fpm/php.ini\
+&&  sed -i 's/html_errors = .*/html_errors = On/' /etc/php/7.0/fpm/php.ini
 #RUN crontab -l | echo "* * * * * cd /var/www/pathfinder; php index.php /cron >> /var/www/pathfinder/logs/cron_pathfinder.log 2>&1" | crontab -
 
 CMD /usr/local/bin/confd -onetime -backend env \
