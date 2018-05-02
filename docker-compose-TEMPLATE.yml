@@ -28,6 +28,7 @@ services:
       SERVERURL: SERVERURL-change this
       SSO_CLIENTID: SSO_CLIENTID-change this
       SSO_SECRETKEY: SSO_CLIENTID-change this
+      ROUTES_SETUP: 1
     networks:
         main:
   pf-db:

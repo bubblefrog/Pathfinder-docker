@@ -1,13 +1,21 @@
 FROM ubuntu:artful as builder
+RUN apt-get update && apt-get install -y composer wget php-zmq php-curl
 ARG VERSION=v1.3.4
 ARG URL=https://github.com/exodus4d/pathfinder/archive/${VERSION}.tar.gz
-RUN apt-get update && apt-get install -y composer wget php-zmq php-curl
 ADD ${URL} /tmp/pf.tar.gz
 RUN tar -C /tmp/ -xvf /tmp/pf.tar.gz\
 &&rm -f /tmp/pf.tar.gz\
 &&mkdir -p /var/www/\
 &&mv -v -f /tmp/pathfinder-[0-9].[0-9].[0-9] /var/www/pathfinder/\
 &&cd /var/www/pathfinder && composer install
+
+ARG PFWSURL=https://github.com/exodus4d/pathfinder_websocket/archive/v1.1.1.tar.gz
+ADD ${PFWSURL} /tmp/pfws.tar.gz
+RUN tar -C /tmp/ -xvf /tmp/pfws.tar.gz\
+&&rm -f /tmp/pfws.tar.gz\
+&&mv -v -f /tmp/pathfinder_websocket-[0-9].[0-9].[0-9] /var/www/pfws/\
+&&cd /var/www/pfws && composer install
+
 
 FROM nginx
 LABEL MAINTAINER="fredriksson8@gmail.com"
@@ -17,6 +25,7 @@ RUN apt-get update && apt-get install -y \
              apache2-utils\
              php7.0-mbstring\
              php-xml\
+             php7.0\
              php7.0-fpm\
              php7.0-zmq\
 		     php7.0-curl \
@@ -24,6 +33,7 @@ RUN apt-get update && apt-get install -y \
              php7.0-gd
 ADD https://github.com/kelseyhightower/confd/releases/download/v0.15.0/confd-0.15.0-linux-amd64 /usr/local/bin/confd
 COPY --from=builder /var/www/pathfinder /var/www/pathfinder
+COPY --from=builder /var/www/pfws /var/www/pfws
 RUN chown -R www-data:www-data /var/www/pathfinder
 WORKDIR /var/www/pathfinder
 COPY assets/nginx/h5bp /etc/nginx/h5bp
@@ -74,6 +84,7 @@ ENV CONFIG_SERVERNAME="PATHFINDER"\
 RUN chmod +x /usr/local/bin/confd && /usr/local/bin/confd -onetime -backend env
 
 RUN rm -f /etc/nginx/conf.d/default.conf \
+&&  ln -sf /conf.d/routes.ini /var/www/pathfinder/app/routes.ini \
 &&  ln -sf /conf.d/config.ini /var/www/pathfinder/app/config.ini \
 &&  ln -sf /conf.d/environment.ini /var/www/pathfinder/app/environment.ini \
 &&  ln -sf /conf.d/pathfinder.ini /var/www/pathfinder/app/pathfinder.ini \
@@ -82,10 +93,11 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
 &&  ln -sf /conf.d/pf-cron /etc/cron.d/pf-cron\
 &&  sed -i 's/max_execution_time = .*/max_execution_time = 600/' /etc/php/7.0/fpm/php.ini\
 &&  sed -i 's/.*max_input_vars = .*/max_input_vars = 3000/' /etc/php/7.0/fpm/php.ini\
-&&  sed -i 's/html_errors = .*/html_errors = On/' /etc/php/7.0/fpm/php.ini
+&&  sed -i 's/html_errors = .*/html_errors = Off/' /etc/php/7.0/fpm/php.ini
 
 CMD /usr/local/bin/confd -onetime -backend env \
 &&htpasswd -b -c /etc/nginx/.setup_pass admin ${ADMIN_PASSWORD}\
 &&service cron start\
 &&service php7.0-fpm start\
-&&nginx -g "daemon off;"
+&&service nginx start\
+&&cd /var/www/pfws && php /var/www/pfws/cmd.php
