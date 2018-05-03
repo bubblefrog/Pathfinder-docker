@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
              php7.0-mbstring\
              php-xml\
              php7.0\
+             php-redis\
              php7.0-fpm\
              php7.0-zmq\
 		     php7.0-curl \
@@ -34,6 +35,7 @@ RUN apt-get update && apt-get install -y \
 ADD https://github.com/kelseyhightower/confd/releases/download/v0.15.0/confd-0.15.0-linux-amd64 /usr/local/bin/confd
 COPY --from=builder /var/www/pathfinder /var/www/pathfinder
 COPY --from=builder /var/www/pfws /var/www/pfws
+COPY assets/bootstrap.php /var/www/pathfinder/bootstrap.php
 RUN chown -R www-data:www-data /var/www/pathfinder
 WORKDIR /var/www/pathfinder
 COPY assets/nginx/h5bp /etc/nginx/h5bp
@@ -95,9 +97,6 @@ RUN rm -f /etc/nginx/conf.d/default.conf \
 &&  sed -i 's/.*max_input_vars = .*/max_input_vars = 3000/' /etc/php/7.0/fpm/php.ini\
 &&  sed -i 's/html_errors = .*/html_errors = Off/' /etc/php/7.0/fpm/php.ini
 
-CMD /usr/local/bin/confd -onetime -backend env \
-&&htpasswd -b -c /etc/nginx/.setup_pass admin ${ADMIN_PASSWORD}\
-&&service cron start\
-&&service php7.0-fpm start\
-&&service nginx start\
-&&cd /var/www/pfws && php /var/www/pfws/cmd.php
+COPY assets/entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+ENTRYPOINT [ "entrypoint.sh" ]
