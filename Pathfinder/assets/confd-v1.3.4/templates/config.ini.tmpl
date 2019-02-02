@@ -37,8 +37,7 @@ LANGUAGE        =   en-US
 ;           CLI (cronjob) scripts use it for cache manipulation.
 ; Tip:      You should not change this.
 ; Syntax    String
-; Default:  {{ md5(@SERVER.SERVER_NAME) }}
-SEED            =   {{ md5(@SERVER.SERVER_NAME) }}
+SEED            =   8fa2699da13cc322905e07d9598dd13b
 
 ; Cache backend
 ;           Can handle Redis, Memcache module, APC, WinCache, XCache and a filesystem-based cache.
@@ -116,8 +115,8 @@ CONF.DEFAULT    =   app/
 ; Load additional config files
 ;           DO NOT load environment.ini, it is loaded automatically
 [configs]
-{{@CONF.DEFAULT}}routes.ini         =   true
-{{@CONF.DEFAULT}}pathfinder.ini     =   true
-{{@CONF.CUSTOM}}pathfinder.ini      =   true
-{{@CONF.DEFAULT}}requirements.ini   =   true
-{{@CONF.DEFAULT}}cron.ini           =   true
+{{"{{@CONF.DEFAULT}}"}}routes.ini         =   true
+{{"{{@CONF.DEFAULT}}"}}pathfinder.ini     =   true
+{{"{{@CONF.CUSTOM}}"}}pathfinder.ini      =   true
+{{"{{@CONF.DEFAULT}}"}}requirements.ini   =   true
+{{"{{@CONF.DEFAULT}}"}}cron.ini           =   true
