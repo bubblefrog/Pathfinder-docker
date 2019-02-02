@@ -1,6 +1,6 @@
 FROM ubuntu:artful as builder
-RUN apt-get update && apt-get install -y composer wget php-zmq php-curl
-ARG VERSION=v1.3.4
+RUN apt-get update && apt-get install -y composer wget php-zmq php-curl php-mbstring php-xml
+ARG VERSION=v1.4.3
 ARG URL=https://github.com/exodus4d/pathfinder/archive/${VERSION}.tar.gz
 ADD ${URL} /tmp/pf.tar.gz
 RUN tar -C /tmp/ -xvf /tmp/pf.tar.gz\
