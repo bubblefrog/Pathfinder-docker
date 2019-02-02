@@ -64,7 +64,7 @@ server {
     fastcgi_pass unix:/run/php/php7.0-fpm.sock;
     fastcgi_index index.php;
     fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
-    fastcgi_read_timeout 300;
+    fastcgi_read_timeout 600;
     # CGI caching
     #fastcgi_cache MYAPP;
     #fastcgi_cache_valid 200 60m;

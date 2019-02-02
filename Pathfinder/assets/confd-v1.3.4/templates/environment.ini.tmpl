@@ -5,12 +5,12 @@
 ; This effects: DB connection, Mail-Server, SSO, ESI configurations in this file
 ; configuration below
 SERVER                      =   PRODUCTION
+
 [ENVIRONMENT.PRODUCTION]
 ; path to index.php (Default: leave blank == "auto-detect")
 ; -> e.g. set /pathfinder if your URL looks like https://www.[YOUR_DOMAIN]/pathfinder (subfolder)
 BASE                        =
 ; deployment URL (e.g. https://www.pathfinder-w.space)
-
 {{if exists "/nginx/https/enabled"}}
     {{if eq (getv "/nginx/https/port") "443"}}
 URL                         =   {{"{{@SCHEME}}"}}://{{getv "/serverurl"}}
@@ -33,6 +33,7 @@ DB_PF_NAME                  =   {{getv "/mysql/pathfinder/dbname"}}
 DB_PF_USER                  =   {{getv "/mysql/pathfinder/user"}}
 DB_PF_PASS                  =   {{getv "/mysql/pathfinder/password"}}
 
+
 ; Universe data (New Eden) cache DB for ESI API respons
 DB_UNIVERSE_DNS             =   mysql:host={{getv "/mysql/universe/host"}};port=3306;dbname=
 DB_UNIVERSE_NAME            =   {{getv "/mysql/universe/dbname"}}
@@ -45,10 +46,12 @@ DB_CCP_NAME                 =   {{getv "/mysql/static/dbname"}}
 DB_CCP_USER                 =   {{getv "/mysql/static/user"}}
 DB_CCP_PASS                 =   {{getv "/mysql/static/password"}}
 
+
 ; CCP SSO
 CCP_SSO_URL                 =   https://login.eveonline.com
 CCP_SSO_CLIENT_ID           =   {{getv "/sso/clientid"}}
 CCP_SSO_SECRET_KEY          =   {{getv "/sso/secretkey"}}
+CCP_SSO_DOWNTIME            =   11:00
 
 ; CCP ESI API
 CCP_ESI_URL                 =   https://esi.tech.ccp.is
@@ -63,9 +66,9 @@ SMTP_SCHEME                 =   TLS
 SMTP_USER                   =
 SMTP_PASS                   =
 
-SMTP_FROM                   =   
-SMTP_ERROR                  =   
+SMTP_FROM                   =   registration@pathfinder-w.space
+SMTP_ERROR                  =   admin@pathfinder-w.space
 
 ; TCP Socket configuration (optional) (advanced)
-SOCKET_HOST                 =   127.0.0.1
-SOCKET_PORT                 =   5555
+;SOCKET_HOST                 =   127.0.0.1
+;SOCKET_PORT                 =   5555
